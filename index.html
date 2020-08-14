@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		<style>
+		</style>
+		<script>
+			function initialize() {
+				let request = new XMLHttpRequest();
+				request.open("GET", "https://hspf.debatecoaches.org/", true);
+				request.onreadystatechange = function() {
+					if (request.readyState == 4)
+					{
+						//Parses the AJAX Request to get the links to access the school's documents
+						let html = new DOMParser().parseFromString(request.response, "text/html");
+						let tempArray = html.getElementsByClassName("wikilink");
+
+						queryArray = [];
+
+						for (var i=0; i<tempArray.length; i++)
+						{
+							if (i <= 5) //The first five elements are completely useless to us
+							{
+								continue;
+							}
+
+							var pathname = tempArray[i].querySelector("a");
+							queryArray.push(pathname.href.replace("file:///C:", "")); //Pushes the pathnames so we can access it later directly
+						}
+						console.log(queryArray)
+					}
+				}
+				request.send();
+			}
+			function display() {
+				
+			}
+			function grabAll() {
+
+			}
+		</script>
+	</head>
+	<body onload="initialize();">
+		<button onclick="grabAll();">Start get request</button>
+		
+	</body>
+</html>
