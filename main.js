@@ -13,7 +13,6 @@ http.createServer((request, response) => {
 	response.setHeader("Access-Control-Allow-Credentials", true);
 
 	var pathname = url.parse(request.url).pathname.substring(1);
-	console.log(`Request for ${pathname} recieved!`);
 
 	if (pathname == "") //If there is no pathname, open the main index.html menu. If there is, then it's probably just the requests coming in
 	{	
