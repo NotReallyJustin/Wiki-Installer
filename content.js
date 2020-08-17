@@ -1,3 +1,4 @@
+//src: Ivan Turner
 const CONTENT_TYPES = [
 	{extension: "html", type: "text"},
 	{extension: "js", type: "text"},
