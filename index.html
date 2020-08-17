@@ -3,9 +3,43 @@
 	<head>
 		<title></title>
 		<style>
+			body
+			{
+				font-family: sans-serif;
+			}
+			#loadingDivHTML
+			{
+				font: 64pt comic sans ms;
+				color: lightgrey;
+				text-align: center;
+				width: 100vw;
+				height: 100vh;
+				z-index: 1;
+				position: absolute;
+				top: 0vh;
+				left: 0%;
+				background-color: white;
+			}
+			table
+			{
+				border: solid black;
+			}
+			td, th
+			{
+				padding: 4px;
+				border: 1px solid black;
+			}
 		</style>
+		<script src="classes.js"></script>
+		<script src="subRequests.js"></script>
 		<script>
 			function initialize() {
+				loadingDiv = document.getElementById("loadingDivHTML");
+				infoTable = document.getElementById("infoTableHTML");
+				grabBtn = document.getElementById("grabBtnHTML");
+				grabAllBtn = document.getElementById("grabAllBtnHTML");
+				schoolArray = [];
+
 				let request = new XMLHttpRequest();
 				request.open("GET", "https://hspf.debatecoaches.org/", true);
 				request.onreadystatechange = function() {
@@ -15,33 +49,68 @@
 						let html = new DOMParser().parseFromString(request.response, "text/html");
 						let tempArray = html.getElementsByClassName("wikilink");
 
-						queryArray = [];
+						let queryArray = [];
 
-						for (var i=0; i<tempArray.length; i++)
+						for (var i=6; i<tempArray.length; i++) //First six elements are useless
 						{
-							if (i <= 5) //The first five elements are completely useless to us
-							{
-								continue;
-							}
-
 							var pathname = tempArray[i].querySelector("a");
-							queryArray.push(pathname.href.replace("file:///C:", "")); //Pushes the pathnames so we can access it later directly
+							queryArray.push(pathname.href.replace("http://127.0.0.1:8081/", "")); //Pushes the pathnames so we can access it later directly
 						}
-						console.log(queryArray)
+						//console.log(queryArray)
+
+						organizeFiles(queryArray);
 					}
 				}
 				request.send();
 			}
-			function display() {
-				
-			}
-			function grabAll() {
+			//Creates the table of everything. Cannot be interacted with while it's generated
+			//This generates faster if you... well, have a faster computer
+			async function createTable() 
+			{
+				infoTable.style.pointerEvents = 'none';
+				grabBtn.style.pointerEvents = 'none';
+				grabAllBtn.style.pointerEvents = 'none';
 
+				for (var k in schoolArray)
+				{
+					for (var teams of schoolArray[k].debaterDirectories)
+					{
+						teams.createTableData();
+					}
+				}
+
+				console.log("io ho finito");
+				loadingDiv.remove();
+
+				infoTable.style.pointerEvents = 'auto';
+				grabBtn.style.pointerEvents = 'auto';
+				grabAllBtn.style.pointerEvents = 'auto';
 			}
 		</script>
 	</head>
 	<body onload="initialize();">
-		<button onclick="grabAll();">Start get request</button>
-		
+		<div id="loadingDivHTML">
+			Loading.....
+		</div>
+
+		<h1>Debate Wiki Item Grabber</h1>
+		<div>
+			Website looks like complete crap right now but I'll fix it after I finish the backend date filtering. <br />
+			Make sure you have a folder called "disclosedFiles" in the root directory
+		</div>
+
+ 		<br />
+
+		<button id="grabAllBtnHTML" onclick="grabAll();">Download all</button> <br />
+		<button id="grabBtnHTML" onclick="grabAllFit();">Download all Fit</button>
+
+
+		<table id="infoTableHTML">
+			<tr>
+				<th>Team Name</th>
+				<th>File Name</th>
+				<th>Install Button</th>
+			</tr>
+		</table>
 	</body>
 </html>

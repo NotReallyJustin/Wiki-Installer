@@ -13,11 +13,19 @@ http.createServer((request, response) => {
 	response.setHeader("Access-Control-Allow-Credentials", true);
 
 	var pathname = url.parse(request.url).pathname.substring(1);
+	console.log(`${pathname} recieved!`);
 
-	if (pathname == "") //If there is no pathname, open the main index.html menu. If there is, then it's probably just the requests coming in
-	{	
-		fs.readFile("index.html", (reject, data) => {
-			var contentType = content.getFileTypeObject("html");
+	if (pathname == "") //Apache
+	{
+		pathname = "index.html";
+	}
+
+	var extension = pathname.substring(pathname.indexOf(".") + 1);
+
+	if ((extension != pathname) && (!pathname.includes("downloadFiles")))	
+	{
+		fs.readFile(pathname, (reject, data) => {
+			var contentType = content.getFileTypeObject(extension); //Template from Turner (GnrlWrldWrount if I spell it correctly)
 
 			if (reject)
 			{
@@ -44,24 +52,24 @@ http.createServer((request, response) => {
 	}
 	else
 	{
-		if (!pathname.includes("downloadFiles"))
+		if (pathname.includes("downloadFiles")) //Program should only respond to download files
 		{
-			throw "That's... not a valid request";
-		}
-
-		var fileLink = pathname.substring(pathname.indexOf("/") + 1);
-		var options = {
-			directory: "./disclosedFiles/" //We can always change this
-		}
-
-		download(fileLink, options, (err) =>
-		{
-			if (err)
-			{
-				throw err;
+			var fileLink = pathname.substring(pathname.indexOf("/") + 1);
+			var options = {
+				directory: "./disclosedFiles/" //We can always change this
 			}
-			response.end();
-		});
+
+			download(fileLink, options, (err) =>
+			{
+				if (err)
+				{
+					throw err;
+				}
+				response.end();
+			});
+		}
+
+		response.end();
 	}
 }).listen(8081);
 	
