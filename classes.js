@@ -19,8 +19,9 @@ Team.prototype.createTableData = function()
 	
 	for (var c=0; c<2; c++)
 	{
-		for (var i in evidenceFiles)
+		for (let i in evidenceFiles)
 		{
+			let evidenceFilesCurrent = evidenceFiles; //Scoping issues fixed - evidenceFilesCurrent will now stay inside this iteration
 			let tempTr = document.createElement("tr");
 
 			let tempTeamName = document.createElement("td");
@@ -34,8 +35,11 @@ Team.prototype.createTableData = function()
 			let tempDownloadButton = document.createElement("button");
 			tempDownloadButton.innerText = "Download";
 			tempDownloadButton.addEventListener("click", function() {
-				//Download
-				downloadTd.innerHTML = "Downloaded!";
+				let getFile = new XMLHttpRequest();
+				getFile.open("GET", "http://127.0.0.1:8081/downloadFiles/" + evidenceFilesCurrent[i], true);
+				getFile.send();
+
+				downloadTd.innerHTML = "Downloaded!"; //Completely gets rid of the download button; we don't need to worry abt event triggering again
 			})
 			downloadTd.appendChild(tempDownloadButton);
 
