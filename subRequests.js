@@ -111,7 +111,7 @@ function grabAllFit() //Downloads all the docs that fit the search query
 	grabBtn.style.pointerEvents = 'none';
 	grabAllBtn.style.pointerEvents = 'none';
 	
-	for (var i=0; i<infoTable.children.length; i++)
+	for (var i=1; i<infoTable.children.length; i++)
 	{
 		if (infoTable.children[i].style.display != "none")
 		{
@@ -120,11 +120,12 @@ function grabAllFit() //Downloads all the docs that fit the search query
 				var downloadRequest = new XMLHttpRequest();
 				downloadRequest.open("GET", "http://127.0.0.1:8081/downloadFiles/https://hspf.debatecoaches.org/download/" + 
 					infoTable.children[i].children[1].innerText.replace(/ /gmi, "%20"), true)
-		downloadRequest.send();
+				downloadRequest.send();
 			}
 			catch(err)
 			{
 				console.log(err);
+				console.log(i);
 				continue;
 			}
 		}
