@@ -1,0 +1,26 @@
+{
+  "name": "wiki-installer",
+  "version": "1.0.0",
+  "description": "Something to download all open sourced files from the PF wiki",
+  "main": "Backend/App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ComradeDiamond/Wiki-Installer.git"
+  },
+  "keywords": [
+    "PF",
+    "Debate"
+  ],
+  "author": "Justin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ComradeDiamond/Wiki-Installer/issues"
+  },
+  "homepage": "https://github.com/ComradeDiamond/Wiki-Installer#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
