@@ -1,23 +1,23 @@
 const HTMLParser = require('node-html-parser');
 const https = require('https');
+const { File } = require('./File.js');
 
 const WIKILINKS = [
+	//'https://hspf20.debatecoaches.org/'
 	'https://hspf.debatecoaches.org/'
 ];
+
+//Beating rate limiter
+sent = 0;
 
 //This database contains all file objects
 database = [];
 
-class File {
-  constructor(link, month, text) {
-    this.link = link;
-    this.month = month;
-    this.text = text;
-  }
-}
-
 //Top level fetch
 module.exports.wikiFetch = () => new Promise((resolve, reject) => {
+	//Temporarily exists to test out server
+	resolve();
+
 	let asyncThreads = [];
 
 	for (var i in WIKILINKS)
@@ -26,7 +26,6 @@ module.exports.wikiFetch = () => new Promise((resolve, reject) => {
 	}
 
 	Promise.allSettled(asyncThreads).then(() => {
-		console.log("resolved")
 		resolve();
 	});
 });
@@ -64,79 +63,87 @@ const fetchSchool = (wikiLink) => new Promise((resolve, reject) => {
 //Find le debater - we'll also use this step to just find all the aff and neg stuff
 const fetchDebater = (schoolLink, wikiLink) => new Promise((resolve, reject) => {
 	let threads = [];
-	console.log(schoolLink)
+	sent++;
 
-	https.get(schoolLink, response => {
-		var chunk = "";
+	setTimeout(() => {
+		https.get(schoolLink, response => {
+			var chunk = "";
 
-		response.on('data', data => {
-			chunk += data;
-		});
-
-		response.on('end', () => {
-			var document = HTMLParser.parse(chunk);
-			let thingy = Array.from(document.querySelector('.grid').querySelectorAll('.wikilink'));
-
-			for (var i in thingy)
-			{
-				//Node HTML uses bootleg href so we need to manually add the thing and carry it through functions >:(
-				//Wiki link is necessary bc the href thing actually just returns the school link again, so we have 2 of them we don't need smh
-				threads[i] = fetchFiles(wikiLink.substring(0, schoolLink.length - 1) + thingy[i].querySelector('a').getAttribute('href'));
-			}
-
-			Promise.allSettled(threads).then(() => {
-				resolve();
+			response.on('data', data => {
+				chunk += data;
 			});
+
+			response.on('end', () => {
+				var document = HTMLParser.parse(chunk);
+				let thingy = Array.from(document.querySelector('.grid').querySelectorAll('.wikilink'));
+
+				for (var i in thingy)
+				{
+					//Node HTML uses bootleg href so we need to manually add the thing and carry it through functions >:(
+					//Wiki link is necessary bc the href thing actually just returns the school link again, so we have 2 of them we don't need smh
+					threads[i] = fetchFiles(wikiLink.substring(0, wikiLink.length - 1) + thingy[i].querySelector('a').getAttribute('href'));
+				}
+
+				Promise.allSettled(threads).then(() => {
+					resolve();
+				});
+			});
+		}).on('error', err => {
+			console.error(err);
+			reject();
 		});
-	})
+	}, 400 * sent);
 });
 
 //Fetches file links in an aff or neg link, and then proceeds to DB that
 const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
-	console.log(sideLink)
-	https.get(sideLink, response => {
-		var chunk = "";
+	sent++;
+	let ent = sent;
+	setTimeout(() => {
+		https.get(sideLink, response => {
+			var chunk = "";
 
-		response.on('data', data => {
-			chunk += data;
-		});
+			response.on('data', data => {
+				chunk += data;
+			});
 
-		response.on('end', () => {
-			var document = HTMLParser.parse(chunk);
-			
-			var docArray = joinEO(document, '#tblCites');
-
-			for (var item of docArray)
-			{
-				var arr = item.querySelector('div').querySelector('div').querySelectorAll('p');
-				var txt = "";
-				for (var thing of arr)
+			response.on('end', () => {
+				try
 				{
-					txt += thing.textContent.replace("  ", "\n");
+					var document = HTMLParser.parse(chunk);
+					var docArray = Array.from(document.querySelector('#tblCites').querySelectorAll('tr')).slice(1);
+
+					for (var item of docArray)
+					{
+						var arr = item.querySelector('div').querySelector('div').querySelectorAll('p');
+						var txt = "";
+						for (var thing of arr)
+						{
+							txt += thing.innerHTML.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ');
+						}
+
+						database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt));
+					}
+
+					var openArray = Array.from(document.querySelector('#tblOpenSource').querySelectorAll('tr')).slice(1);
+
+					for (var item of openArray)
+					{
+						var link = item.querySelector('.wikiexternallink').querySelector('a').getAttribute('href');
+						database.push(new File(link, item.querySelectorAll('td')[1].querySelector('p').textContent, null));
+					}
 				}
-
-				database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt));
-			}
-
-			var openArray = joinEO(document, '#tblOpenSource');
-
-			for (var item of openArray)
-			{
-				var link = item.querySelector('.wikiexternallink').querySelector('a').getAttribute('href');
-				database.push(new File(link, item.querySelectorAll('td')[1].querySelector('p').textContent, null));
-			}
-
-			resolve();
+				catch(err)
+				{
+					console.error(`${err} at ${ent}`);
+				}
+				resolve();
+			})
+		}).on('error', err => {
+			console.error(err + ` at ${ent}`);
+			reject();
 		})
-	})
+	}, 400 * sent);
 });
-
-//Takes a table ID, and gives you the tr that has even and odd classes inside an array
-const joinEO = (document, tableId) => {
-	var a = document.querySelector(tableId).querySelectorAll('.even');
-	var b = document.querySelector(tableId).querySelectorAll('.odd');
-
-	return [...a, ...b];
-}
 
 module.exports.getDatabase = () => database;

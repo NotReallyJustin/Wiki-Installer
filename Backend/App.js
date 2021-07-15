@@ -1,20 +1,34 @@
-const Database = require("./Database.js");
+const Database = require('./Database.js');
+const app = require('express')();
+const Path = require('path');
 
-//First have it go through Database parser so we kinda know the info
-Database.wikiFetch().then(() => {
-	console.dir(Database.getDatabase());
-});
+//Default send file options - excludes the root because express kinda hates relative pathing
+const DEFAULT = {
+	headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true,
+      'x-from': 'Server'
+    }
+}
 
-/*const https = require('https');
-https.get('https://hspf.debatecoaches.org/Basis%20Peoria/Lal-Parau%20Aff', response => {
-	response.setEncoding('utf8');
-	response.on('data', data => {
-		console.log(data.toString());
-	})
+const startServer = async () => {
+	await Database.wikiFetch();
 
-	response.on('end', () => {
-		console.log('end')
-	})
-}).on('error', err => {
-	console.dir(err)
-})*/
+	app.get('/', (request, response) => {
+		var index = Path.resolve(__dirname, '../Frontend/Index.html');
+		response.sendFile(index, DEFAULT);
+	});
+
+	app.get('/:fileName', (request, response) => {
+		var file = Path.resolve(__dirname, '../Frontend', `./${request.params.fileName}`);
+		response.sendFile(file, DEFAULT);
+	});
+
+	app.get('/download/:fileName')
+
+	app.listen(8081, () => {
+		console.log('Server is open on port 8081');
+	});
+}
+
+startServer();
