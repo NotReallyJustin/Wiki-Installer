@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ComradeDiamond/Wiki-Installer#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "node-html-parser": "^3.3.6"
   }
 }
