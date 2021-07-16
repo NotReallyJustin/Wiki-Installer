@@ -116,21 +116,22 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 					for (var item of docArray)
 					{
 						var arr = item.querySelector('div').querySelector('div').querySelectorAll('p');
+						var name = sideLink.split('/').pop().replace('%20', ' ') + item.querySelector('div').querySelector('span');
 						var txt = "";
 						for (var thing of arr)
 						{
 							txt += thing.innerHTML.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ');
 						}
 
-						database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt));
+						database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt, name));
 					}
 
 					var openArray = Array.from(document.querySelector('#tblOpenSource').querySelectorAll('tr')).slice(1);
 
 					for (var item of openArray)
 					{
-						var link = item.querySelector('.wikiexternallink').querySelector('a').getAttribute('href');
-						database.push(new File(link, item.querySelectorAll('td')[1].querySelector('p').textContent, null));
+						var a = item.querySelector('.wikiexternallink').querySelector('a');
+						database.push(new File(a.getAttribute('href'), item.querySelectorAll('td')[1].querySelector('p').textContent, null, a.innerHTML));
 					}
 				}
 				catch(err)

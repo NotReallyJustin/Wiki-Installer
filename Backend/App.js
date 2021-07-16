@@ -11,12 +11,31 @@ const DEFAULT = {
     }
 }
 
+const logger = (request, response, next) => {
+	var str = `${new Date()} - ${request.originalUrl}`;
+
+	console.log(str);
+	next();
+}
+
 const startServer = async () => {
 	await Database.wikiFetch();
+
+	app.use('/*', logger);
 
 	app.get('/', (request, response) => {
 		var index = Path.resolve(__dirname, '../Frontend/Index.html');
 		response.sendFile(index, DEFAULT);
+	});
+
+	app.get('/download/:fileName', (request, response) => {
+		//Download stuff here
+	});
+
+	//To do: filters based on query strings
+	//To do: database checks to see if you're the right person - actually that probably won't matter as there's no OP level perms here
+	app.get('/database', (request, response) => {
+		response.send(Databse.getDatabase());
 	});
 
 	app.get('/:fileName', (request, response) => {
@@ -24,7 +43,10 @@ const startServer = async () => {
 		response.sendFile(file, DEFAULT);
 	});
 
-	app.get('/download/:fileName')
+	app.get('/:folder/:fileName', (request, response) => {
+		var file = Path.resolve(__dirname, '../Frontend', `./${request.params.folder}`, `./${request.params.fileName}`);
+		response.sendFile(file, DEFAULT);
+	});
 
 	app.listen(8081, () => {
 		console.log('Server is open on port 8081');
