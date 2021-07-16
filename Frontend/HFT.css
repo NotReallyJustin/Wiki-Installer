@@ -1,0 +1,77 @@
+/*"Tartagalicious definition makes the girls go loco" - Genshin impact*/
+
+body
+{
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	/*position: sticky;*/
+}
+
+.dimShadow
+{
+	box-shadow: 2px 2px 4px 3px #e6e6e6;
+}
+
+.flexive
+{
+	display: flex;
+	flex-direction: row;
+}
+
+#topBar
+{
+	border-bottom: 1px outset #e6e6e6;;
+	padding-bottom: 2%;
+}
+
+#topBar img
+{
+	padding-left: 5%;
+	padding-right: 3%;
+	width: 10%;
+	height: auto;
+}
+
+#topBar h1
+{
+	font: 48pt trebuchet ms;
+	color: #00b7ff;
+}
+
+#topBar span
+{
+	font: 14pt calibri;
+}
+
+footer
+{
+	border-top: 1px solid #e6e6e6;
+	background-color: #00b7ff;
+	padding: 2%;
+	justify-content: center;
+}
+
+.formalWhite
+{
+	color: white;
+	font: 14pt trebuchet ms;
+}
+
+.formalLink
+{
+	color: #ffd000;
+	font: 14pt trebuchet ms;
+	text-decoration: underline;
+	text-decoration-color: #ffd000;
+}
+
+.whiteLink
+{
+	/*Pair this with formalWhite*/
+	text-decoration: underline;
+	text-decoration-color: white;
+	padding-left: 5%;
+	padding-right: 5%;
+}
