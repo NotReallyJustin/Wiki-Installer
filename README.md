@@ -10,5 +10,5 @@ Some noteworthy stuff
 * Node-HTML doesn't display `HTMLObject.innerText` properly - Any \n would be ommitted by the console
 * JSDOM's operations (well objects that get returned) doesn't actually show the nodeList/HTMLList contents, even under `console.dir`. Very sketchy stuff
 *  You can't iterate through custom JSDOM nodeList using for loop BUT spread syntax somehow works
-*  Debate Wiki has a 1000 request/minute (approximately?) rate limit, which is rly annoying. Maybe we could outsource this thing to another computer
+*  Debate Wiki has a smart slowmode system (smart slowmode as in like the term used in Tech Bot and Srs Bot 🤔) A request every 4s seems to abide by that
 *  ECONNReset seems to trigger when le functions in `respond.end` take too long
