@@ -3,31 +3,154 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="author" content="Justin" />
+		<meta name="keywords" content="Debate, PF, Wiki, Download" />
+		<meta name="description" content="Wiki Installer version 2.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<link rel="stylesheet" href="HFT.css" />
+		<link rel="shortcut icon" href="Images/favicon.ico" />
+		
 		<style>
+			#gimmeGeoDaddy
+			{
+				border-collapse: collapse;
+			}
 
+			#gimmeGeoDaddy, #gimmeGeoDaddy tbody tr, #gimmeGeoDaddy tbody tr td span
+			{
+				width: 100%;
+			}
+
+			#gimmeGeoDaddy > tbody > tr > td
+			{
+				padding-left: 0.5%;
+				padding-right: 0.5%;
+				padding-bottom: 1%;
+				padding-top: 1%;
+				border: 1px solid #f0f0f0;
+			}
+
+			#gimmeGeoDaddy > tbody > tr > td > span
+			{
+				display: inline-block;
+				font: 12pt trebuchet ms;
+				text-align: center;
+			}
+
+			/*Making these adjustments in CSS bc idk what we'll add down the line so scalability*/
+			.dc1
+			{
+				width: 15%;
+			}
+
+			.dc2
+			{
+				width: 65%;
+			}
+
+			.dc3, .dc4
+			{
+				width: 10%;
+				text-align: center;
+			}
+
+			.dc3 img, .dc4 img
+			{
+				width: 90%;
+				height: auto;
+			}
+
+			.headRow
+			{
+				background: linear-gradient(75deg, #00C9FF 0%, #92FE9D 100%); /*Maybe should go for 90deg idk*/
+			}
 		</style>
+
 		<script src='Download.js'></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				DTABLE = document.getElementById('gtbd');
+				append2Table(null);
+			});
+
+			function append2Table(file)
+			{
+				//To do: replace innerText later with actual file items
+				let dRow = document.createElement('tr');
+
+				let dCell1 = document.createElement('td');
+				dCell1.className = 'dc1';
+				let fileDate = document.createElement('span');
+				fileDate.innerText = "7/14/04";
+				dCell1.appendChild(fileDate);
+
+				let dCell2 = document.createElement('td');
+				dCell2.className = 'dc2';
+				let fileName = document.createElement('span');
+				fileName.innerText = "https://www.google.com/search?q=check+mark&source=testingggggg";
+				dCell2.appendChild(fileName);
+
+				let dCell3 = document.createElement('td');
+				dCell3.className = 'dc3';
+				let fileDownload = document.createElement('img');
+				fileDownload.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+				dCell3.appendChild(fileDownload);
+
+				let dCell4 = document.createElement('td');
+				dCell4.className = 'dc4';
+				let clientDownload = document.createElement('img');
+				clientDownload.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+				dCell4.appendChild(clientDownload);
+
+				dRow.appendChild(dCell1);
+				dRow.appendChild(dCell2);
+				dRow.appendChild(dCell3);
+				dRow.appendChild(dCell4);
+				//itching to use the eval function here but I can't :(
+
+				DTABLE.appendChild(dRow);
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Top Menu -->
 		<header id='topBar' class="flexive dimShadow">
-			<img src="Images/Download.png" />
+			<img src="Images/Download.png" class="noDrag"/>
 			<h1>
 				Wiki Installer v2.0
 				<span>- Justin</span>
 			</h1>
 		</header>
 
+		<div id="contentPane">
+			<table id="gimmeGeoDaddy">
+				<tbody id="gtbd">
+					<tr class="headRow">
+						<td class="dc1">
+							<span>Date Posted</span>
+						</td>
+						<td class="dc2">
+							<span>File Name</span>
+						</td>
+						<td class="dc3">
+							<span>Browser Download</span>
+						</td>
+						<td class="dc4">
+							<span>Desktop Download</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 		<footer class="flexive dimShadow">
-			<div class="formalWhite whiteLink">
+			<div class="formalWhite whiteLink clickable" onclick="window.open('./Instructions.html')">
 				Instructions, TOS, etc...
 			</div>
-			<div class="formalWhite whiteLink">
+			<div class="formalWhite whiteLink clickable" onclick="window.open('./Attribution.html')">
 				Attribution
 			</div>
-			<div class="formalWhite">Icons made by <a href="https://icon54.com/" title="Pixel perfect" class="formalLink">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon" class="formalLink">www.flaticon.com</a></div>
 		</footer>
 	</body>
 </html>

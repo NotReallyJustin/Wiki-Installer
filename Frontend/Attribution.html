@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<!-- Thinking of it, the copying and pasting HTML is kinda redundant across le pages
+	Could use Jekyll but ehhhhh not really worth setting up the code for that when I only have 3 files -->
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="author" content="Justin" />
+		<meta name="keywords" content="Debate, PF, Wiki, Download" />
+		<meta name="description" content="Wiki Installer version 2.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="stylesheet" href="HFT.css" />
+		<link rel="shortcut icon" href="Images/favicon.ico" />
+
+		<style>
+			#screening > h2
+			{
+				font: bold 36pt script mt;
+			}
+		</style>
+		<script src='Download.js'></script>
+	</head>
+	<body>
+		<!-- Top Menu -->
+		<header id='topBar' class="flexive dimShadow">
+			<img src="Images/Download.png" class="noDrag"/>
+			<h1>
+				Wiki Installer v2.0
+				<span>- Justin</span>
+			</h1>
+		</header>
+
+		<div id="contentPane">
+			<div id="screening" class="default">
+				<h2>Attribution</h2>
+				<div class="default">
+					Credit for third party software and uh, other stuff like icons. 
+					The libraries used are already credited via the Unlicense on Github
+				</div>
+				<ul>
+					<li>
+						<div class="default">Download icon made by <a href="https://icon54.com/" title="Pixel perfect" class="formalLink">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon" class="formalLink">www.flaticon.com</a></div>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<footer class="flexive dimShadow">
+			<div class="formalWhite whiteLink clickable" onclick="window.open('./Instructions.html')">
+				Instructions, TOS, etc...
+			</div>
+			<div class="formalWhite whiteLink clickable" onclick="window.open('./Attribution.html')">
+				Attribution
+			</div>
+		</footer>
+	</body>
+</html>

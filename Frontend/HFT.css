@@ -24,6 +24,7 @@ body
 {
 	border-bottom: 1px outset #e6e6e6;;
 	padding-bottom: 2%;
+	padding-top: 0.5%;
 }
 
 #topBar img
@@ -74,4 +75,36 @@ footer
 	text-decoration-color: white;
 	padding-left: 5%;
 	padding-right: 5%;
+}
+
+.default
+{
+	color: black;
+	font: 14pt trebuchet ms;
+	text-decoration: none;
+}
+
+#contentPane
+{
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-top: 2%;
+	margin-bottom: 3%;
+}
+
+.clickable
+{
+	cursor: pointer;
+	user-select: none;
+}
+
+.noDrag
+{
+	-webkit-user-drag: none;
+}
+
+.cursiveh2
+{
+	font: bold 36pt script mt;
+	text-shadow: 1px 1px 2px 1px #e3e3e3;
 }
