@@ -67,11 +67,19 @@
 			}
 		</style>
 
-		<script src='Download.js'></script>
+		<script src='Fetch.js'></script>
 		<script>
+			const MONTHS = ['', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 			document.addEventListener("DOMContentLoaded", () => {
 				DTABLE = document.getElementById('gtbd');
-				append2Table(null);
+				
+				fetchQuery()
+					.then(arr => {
+						for (var file of arr)
+						{
+							append2Table(file);
+						}
+					});
 			});
 
 			function append2Table(file)
@@ -82,13 +90,13 @@
 				let dCell1 = document.createElement('td');
 				dCell1.className = 'dc1';
 				let fileDate = document.createElement('span');
-				fileDate.innerText = "7/14/04";
+				fileDate.innerText = file.date;
 				dCell1.appendChild(fileDate);
 
 				let dCell2 = document.createElement('td');
 				dCell2.className = 'dc2';
 				let fileName = document.createElement('span');
-				fileName.innerText = "https://www.google.com/search?q=check+mark&source=testingggggg";
+				fileName.innerText = file.name;
 				dCell2.appendChild(fileName);
 
 				let dCell3 = document.createElement('td');
