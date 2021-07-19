@@ -1,7 +1,7 @@
 module.exports.File = class {
-	constructor(link, month, text, name) {
+	constructor(link, date, text, name) {
 	  this.link = link;
-	  this.month = month;
+	  this.date = date;
 	  this.text = text;
 	  this.name = name;
 	}

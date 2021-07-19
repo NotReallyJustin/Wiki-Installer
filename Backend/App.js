@@ -20,6 +20,7 @@ const logger = (request, response, next) => {
 
 const startServer = async () => {
 	await Database.wikiFetch();
+	console.dir(Database.getDatabase());
 
 	app.use('/*', logger);
 
@@ -35,7 +36,7 @@ const startServer = async () => {
 	//To do: filters based on query strings
 	//To do: database checks to see if you're the right person - actually that probably won't matter as there's no OP level perms here
 	app.get('/database', (request, response) => {
-		response.send(Databse.getDatabase());
+		response.send(Database.getDatabase());
 	});
 
 	app.get('/:fileName', (request, response) => {

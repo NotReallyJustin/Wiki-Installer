@@ -16,7 +16,7 @@ database = [];
 //Top level fetch
 module.exports.wikiFetch = () => new Promise((resolve, reject) => {
 	//Temporarily exists to test out server
-	resolve();
+	//resolve();
 
 	let asyncThreads = [];
 
@@ -81,7 +81,7 @@ const fetchDebater = (schoolLink, wikiLink) => new Promise((resolve, reject) => 
 				{
 					//Node HTML uses bootleg href so we need to manually add the thing and carry it through functions >:(
 					//Wiki link is necessary bc the href thing actually just returns the school link again, so we have 2 of them we don't need smh
-					threads[i] = fetchFiles(wikiLink.substring(0, wikiLink.length - 1) + thingy[i].querySelector('a').getAttribute('href'));
+					threads[i] = fetchFiles(wikiLink.substring(0, wikiLink.length - 1) + thingy[i].querySelector('a').getAttribute('href'))
 				}
 
 				Promise.allSettled(threads).then(() => {
@@ -120,7 +120,7 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 						var txt = "";
 						for (var thing of arr)
 						{
-							txt += thing.innerHTML.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ');
+							txt += sanitize(thing.innerHTML);
 						}
 
 						database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt, name));
@@ -131,7 +131,7 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 					for (var item of openArray)
 					{
 						var a = item.querySelector('.wikiexternallink').querySelector('a');
-						database.push(new File(a.getAttribute('href'), item.querySelectorAll('td')[1].querySelector('p').textContent, null, a.innerHTML));
+						database.push(new File(a.getAttribute('href'), item.querySelectorAll('td')[1].querySelector('p').textContent, null, a.textContent));
 					}
 				}
 				catch(err)
@@ -146,5 +146,8 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 		})
 	}, 400 * sent);
 });
+
+//We try to sanitize DOM stuff we fetched .-.
+const sanititze = (dom) => dom.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ').replace(/<span>/gmi, '').replace(/<\/span>/gmi, '');
 
 module.exports.getDatabase = () => database;
