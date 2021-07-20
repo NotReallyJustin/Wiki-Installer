@@ -11,7 +11,8 @@ const WIKILINKS = [
 sent = 0;
 
 //This database contains all file objects
-database = [];
+files = [];
+database = new Map();
 
 //Top level fetch
 module.exports.wikiFetch = () => new Promise((resolve, reject) => {
@@ -26,6 +27,7 @@ module.exports.wikiFetch = () => new Promise((resolve, reject) => {
 	}
 
 	Promise.allSettled(asyncThreads).then(() => {
+		constructDatabase(sortFiles());
 		resolve();
 	});
 });
@@ -116,14 +118,14 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 					for (var item of docArray)
 					{
 						var arr = item.querySelector('div').querySelector('div').querySelectorAll('p');
-						var name = sideLink.split('/').pop().replace('%20', ' ') + item.querySelector('div').querySelector('span');
+						var name = sanitize(sideLink.split('/').pop().replace('%20', ' ') + item.querySelector('div').querySelector('span'));
 						var txt = "";
 						for (var thing of arr)
 						{
 							txt += sanitize(thing.innerHTML);
 						}
 
-						database.push(new File(null, item.querySelectorAll('td')[1].textContent, txt, name));
+						files.push(new File(null, item.querySelectorAll('td')[1].textContent, txt, name));
 					}
 
 					var openArray = Array.from(document.querySelector('#tblOpenSource').querySelectorAll('tr')).slice(1);
@@ -131,7 +133,7 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 					for (var item of openArray)
 					{
 						var a = item.querySelector('.wikiexternallink').querySelector('a');
-						database.push(new File(a.getAttribute('href'), item.querySelectorAll('td')[1].querySelector('p').textContent, null, a.textContent));
+						files.push(new File(a.getAttribute('href'), item.querySelectorAll('td')[1].querySelector('p').textContent, null, sanitize(a.textContent)));
 					}
 				}
 				catch(err)
@@ -148,6 +150,100 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 });
 
 //We try to sanitize DOM stuff we fetched .-.
-const sanititze = (dom) => dom.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ').replace(/<span>/gmi, '').replace(/<\/span>/gmi, '');
+const sanitize = (dom) => dom.replace(/<br>/gm, '\n').replace(/&nbsp;/gmi, ' ').replace(/<span>/gmi, '').replace(/<\/span>/gmi, '');
 
 module.exports.getDatabase = () => database;
+module.exports.getFiles = () => files;
+
+//Sorts the files in files[] alphabetically
+//Hence when we just yeet this in the database map later, everything will be alphabetized
+const sortFiles = (arr) => {
+	if (arr == undefined) 
+	{
+		arr = files;
+	}
+
+	if (arr.length == 1 || arr.length == 0) 
+	{
+		return arr;
+	}
+
+	let left = sortFiles(arr.slice(0, Math.floor(arr.length / 2)));
+	let right = sortFiles(arr.slice(Math.floor(arr.length / 2)));
+
+	for (var l = 0, r = 0, i = 0; l < left.length || r < right.length; i++)
+	{
+		if (l >= left.length)
+		{
+			arr[i] = right[r];
+			r++;
+		}
+		else if (r >= right.length || left[l].lowerName() < right[r].lowerName())
+		{
+			arr[i] = left[l];
+			l++;
+		}
+		else //if right has lesser date or lesser lexicographic name
+		{
+			arr[i] = right[r];
+			r++;
+		}
+	}
+
+	return arr;
+}
+
+//Creates a "tree" like thing
+//Map of year --> Map of month --> Map of Day --> Array of files
+const constructDatabase = (sortedFiles) => {
+	sortedFiles.forEach(file => {
+		//Could use recursion here but like this method saves 5 lines of code
+		database.has(file.year) || database.set(file.year, new Map());
+		database.get(file.year).has(file.month) || database.get(file.year).set(file.month, new Map());
+		database.get(file.year).get(file.month).has(file.day) || database.get(file.year).get(file.month).set(file.day, []);
+
+		database.get(file.year).get(file.month).get(file.day).push(file);
+	});
+}
+
+//Takes the params and returns an array with items that match the query available
+module.exports.fetchFiles = (year, month, day, name) => {
+	let ret = [];
+	fetch(database, [year, month, day, name], 0, ret);
+
+	return ret;
+}
+
+const fetch = (currMap, args, tierNum, ret) => {
+	//tierNum 3 is an array instead of a map, so we need to adjust the recursion
+	if (tierNum == 3)
+	{
+		if (args[3])
+		{
+			//Maybe to be fixed when the wiki blows up in user population, but the wiki contribution size on a given day is so smol
+			//that O(n) is faster than by binary linear search thing from srs bot 🤔
+			let regEx = new RegExp(`${args[3]}`, 'gmi');
+			Array.prototype.push.apply(ret, currMap.filter(file => 
+				regEx.test(item.replace(/-/gm, ' '))
+			));
+		}
+		else
+		{
+			Array.prototype.push.apply(ret, currMap);
+		}
+	}
+	else
+	{
+		if (args[tierNum])
+		{
+			fetch(currMap.get(args[tierNum]), args, tierNum + 1, ret);
+		}
+		else
+		{
+			for (var values of currMap)
+			{
+				fetch(values, args, tierNum + 1, ret);
+			}
+		}
+	}
+}

@@ -20,7 +20,7 @@ const logger = (request, response, next) => {
 
 const startServer = async () => {
 	await Database.wikiFetch();
-	console.dir(Database.getDatabase());
+	console.dir(Database.fetchFiles('21', '7', '14'));
 
 	app.use('/*', logger);
 
