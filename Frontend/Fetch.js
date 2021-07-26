@@ -1,5 +1,5 @@
 /* Filters should be in JSON form and all lowercase
-Possible items: month, year, team name
+Possible keys: month, year, day, name
 If nothing is in filters, this defaults to returning everything in Database.js*/
 async function fetchQuery(filters)
 {
@@ -32,4 +32,60 @@ async function fetchQuery(filters)
 		console.error(err);
 		return err;
 	}
+}
+
+//Should have all the filters filled out
+async function download(filters, dc3)
+{
+	if (filters.month && filters.day && filters.year && filters.name)
+	{
+		//filters.name.replace('%20', ' ');
+		var arr = await fetchQuery(filters);
+		var file = arr[0];
+
+		if (file.link)
+		{
+			window.open(file.link);
+		}
+		else
+		{
+			let str = `data:text/plain;charset=utf-8,${encodeURIComponent(file.text)}`;
+			/*downloads.download({
+				allowHttpErrors: false,
+				conflictAction: "uniquify",
+				fileName: file.name,
+				method: "GET",
+				saveAs: true,
+				url: str
+			}); brrrt chrome API trash*/
+
+			let a = document.createElement('a');
+			a.href = str;
+			a.download = file.name;
+			a.click();
+		}
+	}
+	else
+	{
+		alert("404 Error - Download failed. See console for error data.");
+		console.dir(filters);
+	}
+
+	dc3.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+}
+
+//Should have all the filters filled out
+async function remoteDownload(filters, tr)
+{
+	if (filters.month && filters.day && filters.date && filters.name)
+	{
+		var arr = await fetchQuery(filters);
+	}
+	else
+	{
+		alert("404 Error - Download failed. See console for error data.");
+		console.dir(filters);
+	}
+
+	tr.querySelector('.dc4').src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
 }

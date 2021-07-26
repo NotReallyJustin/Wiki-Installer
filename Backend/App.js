@@ -20,7 +20,7 @@ const logger = (request, response, next) => {
 
 const startServer = async () => {
 	await Database.wikiFetch();
-	console.dir(Database.fetchFiles('21', '7', '14'));
+	//console.dir(Database.fetchFiles(undefined, undefined, undefined, undefined));
 
 	app.use('/*', logger);
 
@@ -30,13 +30,15 @@ const startServer = async () => {
 	});
 
 	app.get('/download/:fileName', (request, response) => {
-		//Download stuff here
+		//To add
 	});
 
 	//To do: filters based on query strings
 	//To do: database checks to see if you're the right person - actually that probably won't matter as there's no OP level perms here
 	app.get('/database', (request, response) => {
-		response.send(Database.getDatabase());
+		var qr = request.query;
+		var files = Database.fetchFiles(qr.year, qr.month, qr.day, qr.name);
+		response.send(files);
 	});
 
 	app.get('/:fileName', (request, response) => {

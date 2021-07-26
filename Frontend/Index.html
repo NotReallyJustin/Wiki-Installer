@@ -57,14 +57,56 @@
 
 			.dc3 img, .dc4 img
 			{
-				width: 90%;
+				width: 80%;
 				height: auto;
+				cursor: pointer;
 			}
 
 			.headRow
 			{
 				background: linear-gradient(75deg, #00C9FF 0%, #92FE9D 100%); /*Maybe should go for 90deg idk*/
 			}
+
+			.inputSect
+			{
+				display: flex;
+				flex-direction: horizontal;
+				width: 100%;
+			}
+
+			.inputSect span
+			{
+				width: 25%;
+			}
+
+			.querLabel, .querPut
+			{
+				display: block;
+				font: 14pt trebuchet ms;
+			}
+
+			.querPut
+			{
+				width: 30%;
+			}
+
+			.querText
+			{
+				width: 100%;
+			}
+
+			.qSpan
+			{
+				background: linear-gradient(75deg, #00C9FF 0%, #92FE9D 100%);
+				border: 2px solid white;
+				box-shadow: 1px 1px 2px 1px 1px lightgrey;
+				align-items: center;
+				justify-content: center;
+				font: 18pt trebuchet ms;
+				cursor: pointer;
+			}
+
+			/*Make the two blocks*/
 		</style>
 
 		<script src='Fetch.js'></script>
@@ -80,7 +122,59 @@
 							append2Table(file);
 						}
 					});
+
+				FS = document.getElementById('fetchSpan');
+				Month = document.getElementById('querMonth');
+				Day = document.getElementById('querDay');
+				Year = document.getElementById('querYear');
+				StringQuery = document.getElementById('querName');
+
+				FS.addEventListener('click', () => {
+					var query = {};
+
+					if (verifyMonth()) query.month = normalize(Month.value);
+					if (verifyDay()) query.day = normalize(Day.value);
+					if (verifyYear()) query.year = normalize(Year.value);
+					if (StringQuery.value != '') query.name = StringQuery.value.trim();
+
+					fetchQuery(query)
+						.then(arr => {
+							var extraTr = document.querySelectorAll('tr:not(.headRow)');
+							for (var el of extraTr)
+							{
+								el.remove();
+							}
+
+							for (var file of arr)
+							{
+								append2Table(file);
+							}
+						});
+				});
 			});
+
+			//Turn the strings into smth usable by the database 
+			//ie. "07" --> "7"
+			//Precondition: You run the str through verifyMonth/Day/Year()
+			function normalize(str)
+			{
+				return +str + "";
+			}
+
+			function verifyMonth()
+			{
+				return !isNaN(Month.value) && Month.value > 0 && Month.value < 12 && Month.value % 1 == 0;
+			}
+
+			function verifyDay()
+			{
+				return !isNaN(Day.value) && Day.value > 0 && Day.value < 32 && Day.value % 1 == 0;
+			}
+
+			function verifyYear()
+			{
+				return !isNaN(Year.value) && Year.value > 0 && Year.value % 1 == 0;
+			}
 
 			function append2Table(file)
 			{
@@ -102,13 +196,21 @@
 				let dCell3 = document.createElement('td');
 				dCell3.className = 'dc3';
 				let fileDownload = document.createElement('img');
-				fileDownload.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+				fileDownload.src = './Images/Save.png';
+				fileDownload.addEventListener('click', function(event) {
+					download({
+						month: file.month,
+						day: file.day,
+						year: file.year,
+						name: file.name
+					}, this);
+				});
 				dCell3.appendChild(fileDownload);
 
 				let dCell4 = document.createElement('td');
 				dCell4.className = 'dc4';
 				let clientDownload = document.createElement('img');
-				clientDownload.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+				clientDownload.src = './Images/DesktopSave.png';
 				dCell4.appendChild(clientDownload);
 
 				dRow.appendChild(dCell1);
@@ -132,6 +234,29 @@
 		</header>
 
 		<div id="contentPane">
+			<form id="quers">
+				<section class='inputSect'>
+					<span>
+						<label for='querMonth' class='querLabel'>Month</label>
+						<input id='querMonth' type="text" pattern="\d*" class='querPut' maxlength="2" />
+					</span>
+					<span>
+						<label for='querDay' class='querLabel'>Day</label>
+						<input id='querDay' type="text" pattern="\d*" class='querPut' maxlength="2" />
+					</span>
+					<span>
+						<label for='querYear' class='querLabel'>Year (yy format)</label>
+						<input id='querYear' type="text" pattern="\d*" class='querPut' maxlength="2" />
+					</span>
+					<span class='flexive qSpan' id='fetchSpan'>
+						Filter!
+					</span>
+				</section>
+				<br />
+				<label for='querName' class='querLabel'>Filter by Name</label>
+				<input id='querName' class='querPut querText'/> <br />
+			</form>
+
 			<table id="gimmeGeoDaddy">
 				<tbody id="gtbd">
 					<tr class="headRow">

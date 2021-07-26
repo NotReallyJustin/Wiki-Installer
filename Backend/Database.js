@@ -18,7 +18,6 @@ database = new Map();
 module.exports.wikiFetch = () => new Promise((resolve, reject) => {
 	//Temporarily exists to test out server
 	//resolve();
-
 	let asyncThreads = [];
 
 	for (var i in WIKILINKS)
@@ -118,7 +117,7 @@ const fetchFiles = (sideLink) => new Promise((resolve, reject) => {
 					for (var item of docArray)
 					{
 						var arr = item.querySelector('div').querySelector('div').querySelectorAll('p');
-						var name = sanitize(sideLink.split('/').pop().replace('%20', ' ') + item.querySelector('div').querySelector('span'));
+						var name = sanitize(sideLink.split('/').pop().replace(/%20|-/gmi, ' ') + ': ' + item.querySelector('div').querySelector('span'));
 						var txt = "";
 						for (var thing of arr)
 						{
@@ -209,6 +208,7 @@ const constructDatabase = (sortedFiles) => {
 //Takes the params and returns an array with items that match the query available
 module.exports.fetchFiles = (year, month, day, name) => {
 	let ret = [];
+	//console.dir([year, month, day, name])
 	fetch(database, [year, month, day, name], 0, ret);
 
 	return ret;
@@ -218,13 +218,14 @@ const fetch = (currMap, args, tierNum, ret) => {
 	//tierNum 3 is an array instead of a map, so we need to adjust the recursion
 	if (tierNum == 3)
 	{
+		//console.log(args[3])
 		if (args[3])
 		{
 			//Maybe to be fixed when the wiki blows up in user population, but the wiki contribution size on a given day is so smol
 			//that O(n) is faster than by binary linear search thing from srs bot 🤔
-			let regEx = new RegExp(`${args[3]}`, 'gmi');
+			let regEx = new RegExp(args[3].replace(/\./gmi, '\\.').replace(/\?/gmi, '\\?'), 'gmi');
 			Array.prototype.push.apply(ret, currMap.filter(file => 
-				regEx.test(item.replace(/-/gm, ' '))
+				regEx.test(file.name.replace(/-/gm, ' ')) || regEx.test(file.name)
 			));
 		}
 		else
@@ -240,7 +241,8 @@ const fetch = (currMap, args, tierNum, ret) => {
 		}
 		else
 		{
-			for (var values of currMap)
+			//console.dir(currMap);
+			for (var values of currMap.values())
 			{
 				fetch(values, args, tierNum + 1, ret);
 			}
