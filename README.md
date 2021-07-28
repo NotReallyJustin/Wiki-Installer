@@ -2,6 +2,12 @@
 A node.js app that downloads all the evidence files disclosed on the debate wiki easily <br />
 Version 2.0 because the last one was weird :sunglasses:
 
+## Dependencies
+Download these from npm before you run the app
+* Express.js
+* Download
+* Node-html parser
+
 ## Some observations
 So I've been fiddling with JSDOM, Node-HTML Parser, and the overall library <br />
 Some noteworthy stuff
