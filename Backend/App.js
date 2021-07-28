@@ -1,6 +1,8 @@
 const Database = require('./Database.js');
 const app = require('express')();
 const Path = require('path');
+const fs = require('fs');
+const download = require('download');
 
 //Default send file options - excludes the root because express kinda hates relative pathing
 const DEFAULT = {
@@ -29,8 +31,37 @@ const startServer = async () => {
 		response.sendFile(index, DEFAULT);
 	});
 
-	app.get('/download/:fileName', (request, response) => {
-		//To add
+	app.get('/download', (request, response) => {
+		var qr = request.query;
+		let downloadArr = Database.fetchFiles(qr.year, qr.month, qr.day, qr.name);
+
+		downloadArr.forEach(file => {
+			if (file.link)
+			{	
+				try
+				{
+					download(file.link, Path.resolve(__dirname, '../Downloads'));
+				}
+				catch(err)
+				{
+					//Not really defensive programming lol but worth a shot
+					console.error('At internal link download: ' + err);
+				}
+			}
+			else
+			{
+				try
+				{
+					fs.writeFileSync(Path.resolve(__dirname, '../Downloads', `./${file.name.replace(/[\.:;]/gmi, '-')}.txt`), file.text, {encoding: 'utf8'});
+				}
+				catch(err)
+				{
+					console.error('At internal link write: ' + err);
+				}
+			}
+		});
+
+		response.end();
 	});
 
 	//To do: filters based on query strings

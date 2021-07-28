@@ -124,6 +124,7 @@
 					});
 
 				FS = document.getElementById('fetchSpan');
+				DownloadAll = document.getElementById('downloadAll');
 				Month = document.getElementById('querMonth');
 				Day = document.getElementById('querDay');
 				Year = document.getElementById('querYear');
@@ -150,6 +151,14 @@
 								append2Table(file);
 							}
 						});
+				});
+
+				DownloadAll.addEventListener('click', () => {
+					var iterator = document.getElementsByClassName('dc4');
+					for (var btn of iterator)
+					{
+						btn.children[0].click();
+					}
 				});
 			});
 
@@ -211,6 +220,14 @@
 				dCell4.className = 'dc4';
 				let clientDownload = document.createElement('img');
 				clientDownload.src = './Images/DesktopSave.png';
+				clientDownload.addEventListener('click', function(event) {
+					remoteDownload({
+						month: file.month,
+						day: file.day,
+						year: file.year,
+						name: file.name
+					}, this);
+				})
 				dCell4.appendChild(clientDownload);
 
 				dRow.appendChild(dCell1);
@@ -250,6 +267,9 @@
 					</span>
 					<span class='flexive qSpan' id='fetchSpan'>
 						Filter!
+					</span>
+					<span class='flexive qSpan' id='downloadAll'>
+						Desktop Download All
 					</span>
 				</section>
 				<br />

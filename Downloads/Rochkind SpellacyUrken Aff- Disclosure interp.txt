@@ -1,0 +1,2 @@
+Tournament: Any | Round: 1 | Opponent: Any | Judge: Any
+Interpretation: debaters must disclose the full text of all cards for all previously broken case positions on the 2021-2022s NDCA PF wiki at least 30 minutes before the round on the tournament’s topic under the correct entry name.

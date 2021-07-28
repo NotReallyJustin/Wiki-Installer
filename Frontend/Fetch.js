@@ -75,17 +75,24 @@ async function download(filters, dc3)
 }
 
 //Should have all the filters filled out
-async function remoteDownload(filters, tr)
+async function remoteDownload(filters, d4)
 {
-	if (filters.month && filters.day && filters.date && filters.name)
+	if (filters.month && filters.day && filters.year && filters.name)
 	{
-		var arr = await fetchQuery(filters);
+		var req = 'http://127.0.0.1:8081/download';
+
+		Object.keys(filters).forEach((val, idx) => {
+			req += idx == 0 ? '?' : '&';
+			req += `${val}=${filters[val]}`;
+		});
+
+		await fetch(req);
 	}
 	else
 	{
-		alert("404 Error - Download failed. See console for error data.");
+		alert("404 Error - Download failed + Missing query data. See console for error data.");
 		console.dir(filters);
 	}
 
-	tr.querySelector('.dc4').src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
+	d4.src = 'https://thumbs.dreamstime.com/b/green-check-mark-icon-checkmark-circle-checklist-tick-colored-flat-style-vector-illustration-eps-154721515.jpg';
 }

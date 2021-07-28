@@ -1,0 +1,2 @@
+Tournament: Any | Round: 1 | Opponent: Any | Judge: Any
+Interpretation: debaters must only read evidence that is directly quoted from full cut cards when new evidence is introduced in the round. To clarify, don’t paraphrase.

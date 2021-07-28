@@ -54,7 +54,6 @@ const fetchSchool = (wikiLink) => new Promise((resolve, reject) => {
 				resolve();
 			});
 		});
-
 	}).on('error', err => {
 		console.error(err);
 		reject();
