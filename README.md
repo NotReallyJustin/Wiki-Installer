@@ -8,6 +8,12 @@ Download these from npm before you run the app
 * Download
 * Node-html parser
 
+## Instructions to Start
+* Go to the root directory
+* Install node dependencies
+* `npm start` on node console
+* Go to `https://127.0.0.1:8081/` and take it from there!
+
 ## Some observations
 So I've been fiddling with JSDOM, Node-HTML Parser, and the overall library <br />
 Some noteworthy stuff
