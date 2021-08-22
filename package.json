@@ -4,7 +4,8 @@
   "description": "Something to download all open sourced files from the PF wiki",
   "main": "Backend/App.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node Backend/App.js"
   },
   "repository": {
     "type": "git",
